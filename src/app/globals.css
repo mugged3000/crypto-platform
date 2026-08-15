@@ -1,26 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ── Design Tokens (replaces tailwind.config.js theme) ─────────── */
+@theme {
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Colors */
+  --color-navy-900: #0a0a0f;
+  --color-navy-800: #10101a;
+  --color-navy-700: #16162a;
+  --color-navy-600: #1e1e35;
+  --color-navy-500: #252540;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-gold:      #c9a84c;
+  --color-gold-light: #e8c96a;
+  --color-gold-dark:  #a8722a;
+
+  --color-success: #22c55e;
+  --color-danger:  #ef4444;
+  --color-warning: #eab308;
+  --color-info:    #818cf8;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+
+  /* Animations */
+  --animate-float:       float 6s ease-in-out infinite;
+  --animate-pulse-gold:  pulseGold 2s ease-in-out infinite;
+  --animate-shimmer:     shimmer 2.5s linear infinite;
+
+  /* Keyframes */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-12px); }
+  }
+  @keyframes pulseGold {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.3); }
+    50%       { box-shadow: 0 0 0 12px rgba(201,168,76,0); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
   }
 }
 
+/* ── Google Font ────────────────────────────── */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap'); */
+
+/* ── Base Styles ────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-navy-900);
+  color: #f0f0fa;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Lenis Smooth Scroll ────────────────────── */
+html.lenis {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+/* ── Selection Color ────────────────────────── */
+::selection {
+  background: rgba(201, 168, 76, 0.25);
+  color: #e8c96a;
+}
+
+/* ── Custom Scrollbar ───────────────────────── */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: #10101a; }
+::-webkit-scrollbar-thumb { background: #252540; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #c9a84c; }
+
+/* ── Reusable Component Classes ─────────────── */
+@layer components {
+
+  /* Gold gradient text */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #f0f0fa 0%, #c9a84c 60%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Card base — dark card with gold top shimmer line */
+  .card-base {
+    background: var(--color-navy-700);
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .card-base::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(201, 168, 76, 0.6),
+      transparent
+    );
+  }
+
+  /* Primary button — gold gradient */
+  .btn-primary {
+    background: linear-gradient(135deg, #c9a84c, #a8722a);
+    color: #0a0a0f;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: var(--radius-md);
+    padding: 12px 28px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.01em;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.3);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* Ghost button — transparent with subtle border */
+  .btn-ghost {
+    background: transparent;
+    color: #9898b8;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 12px 28px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(201, 168, 76, 0.4);
+    color: #c9a84c;
+  }
+
+  /* Gold outline button */
+  .btn-outline-gold {
+    background: rgba(201, 168, 76, 0.08);
+    color: #c9a84c;
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    border-radius: var(--radius-md);
+    padding: 12px 28px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-outline-gold:hover {
+    background: rgba(201, 168, 76, 0.15);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+  }
+
+  /* Page section wrapper */
+  .section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Shimmer skeleton loader */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-navy-700) 25%,
+      var(--color-navy-600) 50%,
+      var(--color-navy-700) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Gold glow shadow utility */
+  .shadow-gold {
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.15);
+  }
+  .shadow-gold-sm {
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.1);
+  }
+}
+
+/* Navbar responsive */
+@media (max-width: 768px) {
+  .nav-desktop-links {
+    display: none !important;
+  }
+  .nav-desktop-actions {
+    display: none !important;
+  }
+  .mobile-hamburger {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-hamburger {
+    display: none !important;
+  }
+  .nav-mobile-menu {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .nav-desktop-links {
+    gap: 2px !important;
+  }
+  .nav-desktop-links a {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+  }
+  .nav-desktop-actions button {
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+  }
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px) scale(1); opacity: 0.4; }
+  100% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
 }
