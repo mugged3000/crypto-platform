@@ -14,11 +14,12 @@ export const siteConfig = {
 };
 
 export const legalLinks = [
-  { label: 'Terms of Service', href: '/legal/terms',           icon: 'fas fa-file-contract',        desc: 'The rules for using VAULTEX' },
-  { label: 'Privacy Policy',   href: '/legal/privacy',         icon: 'fas fa-user-shield',          desc: 'How we handle your data' },
-  { label: 'Risk Disclosure',  href: '/legal/risk-disclosure', icon: 'fas fa-triangle-exclamation', desc: 'What you could lose' },
+  { label: 'Terms of Service', href: '/legal/terms',           icon: 'fas fa-file-contract',           desc: 'The rules for using VAULTEX' },
+  { label: 'Privacy Policy',   href: '/legal/privacy',         icon: 'fas fa-user-shield',             desc: 'How we handle your data' },
+  { label: 'Risk Disclosure',  href: '/legal/risk-disclosure', icon: 'fas fa-triangle-exclamation',    desc: 'What you could lose' },
   { label: 'AML Policy',       href: '/legal/aml-policy',      icon: 'fas fa-magnifying-glass-dollar', desc: 'Anti-money-laundering controls' },
-  { label: 'Compliance',       href: '/legal/compliance',      icon: 'fas fa-scale-balanced',       desc: 'Our compliance framework' },
+  { label: 'Compliance',       href: '/legal/compliance',      icon: 'fas fa-scale-balanced',          desc: 'Our compliance framework' },
+  { label: 'White Paper',      href: '/api/whitepaper',        icon: 'fas fa-file-lines',              desc: 'Our full technical overview', external: true },
 ];
 
 export const companyLinks = [
