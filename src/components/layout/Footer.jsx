@@ -5,40 +5,16 @@ import Link from 'next/link';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import FAQModal from '../shared/FAQModal';
+import { platformLinks, companyLinks, legalLinks } from '@/lib/siteConfig';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const linkColumns = [
-  {
-    heading: 'Platform',
-    links: [
-      { label: 'Home', href: '#home' },
-      { label: 'How It Works', href: '#how-it-works' },
-      { label: 'Investment Plans', href: '#plans' },
-      { label: 'Why Us', href: '#why-us' },
-      { label: 'FAQ', href: '#faq' },
-    ],
-  },
-  {
-    heading: 'Company',
-    links: [
-      { label: 'About Us', href: '#' },
-      { label: 'Careers', href: '#' },
-      { label: 'Blog', href: '#' },
-      { label: 'Press Kit', href: '#' },
-      { label: 'Contact', href: '#' },
-    ],
-  },
-  {
-    heading: 'Legal',
-    links: [
-      { label: 'Terms of Service', href: '#' },
-      { label: 'Privacy Policy', href: '#' },
-      { label: 'Risk Disclosure', href: '#' },
-      { label: 'AML Policy', href: '#' },
-      { label: 'Compliance', href: '#' },
-    ],
-  },
+  { heading: 'Platform', links: platformLinks },
+  { heading: 'Company',  links: companyLinks },
+  // Legal is collapsed into a dropdown; every entry is its own page.
+  { heading: 'Legal',    links: legalLinks, dropdown: true },
 ];
 
 const socials = [
@@ -65,6 +41,8 @@ export default function Footer() {
 
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [legalOpen, setLegalOpen] = useState(false);
+  const [faqOpen, setFaqOpen] = useState(false);
 
   useGSAP(() => {
     gsap.fromTo(topRef.current,
@@ -105,6 +83,7 @@ export default function Footer() {
   };
 
   return (
+    <>
     <footer
       ref={sectionRef}
       style={{
@@ -259,29 +238,77 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          {linkColumns.map((col, i) => (
-            <div key={col.heading} ref={(el) => (columnsRef.current[i + 1] = el)} style={{ opacity: 0 }}>
-              <h4 style={{
-                fontSize: 12.5, fontWeight: 700, color: '#f0f0fa',
-                letterSpacing: '0.06em', textTransform: 'uppercase',
-                marginBottom: 20,
-              }}>
-                {col.heading}
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
-                {col.links.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="footer-link"
-                    style={{ fontSize: 13.5, color: '#8888a8', textDecoration: 'none' }}
+          {linkColumns.map((col, i) => {
+            const headingStyle = {
+              fontSize: 12.5, fontWeight: 700, color: '#f0f0fa',
+              letterSpacing: '0.06em', textTransform: 'uppercase',
+              marginBottom: 20,
+            };
+            const open = col.dropdown ? legalOpen : true;
+            return (
+              <div key={col.heading} ref={(el) => (columnsRef.current[i + 1] = el)} style={{ opacity: 0 }}>
+                {col.dropdown ? (
+                  <button
+                    type="button"
+                    onClick={() => setLegalOpen((o) => !o)}
+                    aria-expanded={legalOpen}
+                    aria-controls="footer-legal-links"
+                    style={{
+                      ...headingStyle,
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      gap: 10, width: '100%', maxWidth: 190,
+                      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                      color: legalOpen ? '#c9a84c' : '#f0f0fa',
+                      transition: 'color 0.2s ease',
+                    }}
                   >
-                    {link.label}
-                  </Link>
-                ))}
+                    <span>{col.heading}</span>
+                    <i
+                      className="fas fa-chevron-down"
+                      style={{
+                        fontSize: 10,
+                        transform: legalOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.25s ease',
+                      }}
+                    ></i>
+                  </button>
+                ) : (
+                  <h4 style={headingStyle}>{col.heading}</h4>
+                )}
+
+                <div
+                  id={col.dropdown ? 'footer-legal-links' : undefined}
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: open ? '1fr' : '0fr',
+                    visibility: open ? 'visible' : 'hidden',
+                    transition: 'grid-template-rows 0.3s ease, visibility 0.3s',
+                  }}
+                >
+                  <div style={{ overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+                      {col.links.map((link) => (
+                        <Link
+                          key={link.label}
+                          href={link.href}
+                          onClick={(e) => {
+                            if (link.isFaq) {
+                              e.preventDefault();
+                              setFaqOpen(true);
+                            }
+                          }}
+                          className="footer-link"
+                          style={{ fontSize: 13.5, color: '#8888a8', textDecoration: 'none' }}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
         </div>
 
@@ -376,6 +403,11 @@ export default function Footer() {
             © {new Date().getFullYear()} VAULTEX. All rights reserved.
           </span>
 
+          <span style={{ fontSize: 12, color: '#5a5a78', flexBasis: '100%', lineHeight: 1.7 }}>
+            Investing in digital assets involves risk, including the loss of your capital. Returns are not guaranteed.{' '}
+            <Link href="/legal/risk-disclosure" style={{ color: '#8888a8' }}>Read the Risk Disclosure</Link>.
+          </span>
+
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#5a5a78' }}>
             <span style={{
               width: 6, height: 6, borderRadius: '50%',
@@ -396,5 +428,7 @@ export default function Footer() {
         }
       `}</style>
     </footer>
+    <FAQModal open={faqOpen} onClose={() => setFaqOpen(false)} />
+    </>
   );
 }

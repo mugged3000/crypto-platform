@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
 import SmoothScrollProvider from './providers/SmoothScrollProvider';
+import ChatWidgets from '../components/layout/ChatWidgets';
 import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({
@@ -29,8 +30,10 @@ export default function RootLayout({ children }) {
       <body className="bg-navy-900 text-white antialiased overflow-x-hidden">
         <SmoothScrollProvider>
           {children}
+           <ChatWidgets /> 
         </SmoothScrollProvider>
-
+      <Toaster />
+   
         {/* Toast notifications */}
         <Toaster
           position="top-right"
