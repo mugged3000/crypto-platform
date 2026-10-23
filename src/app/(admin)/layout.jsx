@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminNavbar from '@/components/admin/AdminNavbar';
-
+import AuthSession from '@/components/shared/AuthSession';
 export default function AdminLayout({ children }) {
   const router        = useRouter();
   const [user,        setUser]        = useState(null);
@@ -57,6 +57,7 @@ export default function AdminLayout({ children }) {
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0f', display: 'flex' }}>
 
+         <AuthSession />
       {/* Sidebar */}
       <AdminSidebar
         user={user}

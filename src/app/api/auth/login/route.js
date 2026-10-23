@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { signAccessToken, signRefreshToken, setAuthCookies } from '@/lib/auth';
 import prisma from '@/lib/prismakey';
 
 export async function POST(request) {
@@ -85,15 +85,9 @@ export async function POST(request) {
     });
 
     // Create JWT token
-    const token = jwt.sign(
-      {
-        id:    user.id,
-        email: user.email,
-        role:  user.role,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
+       // Create the short-lived access token and the long-lived refresh token
+    const token        = signAccessToken(user);
+    const refreshToken = signRefreshToken(user);
 
     // Return token + safe user data
     const response = NextResponse.json({
@@ -113,13 +107,8 @@ export async function POST(request) {
     });
 
     // Also set token as httpOnly cookie
-    response.cookies.set('token', token, {
-      httpOnly: true,
-      secure:   process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge:   60 * 60 * 24 * 7, // 7 days
-      path:     '/',
-    });
+      // Both tokens travel as httpOnly cookies (see lib/auth.js)
+    setAuthCookies(response, token, refreshToken);
 
     return response;
 

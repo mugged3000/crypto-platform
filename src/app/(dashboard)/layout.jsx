@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
 import DashboardFooter from '@/components/dashboard/DashboardFooter';
-
+import AuthSession from '@/components/shared/AuthSession';
 export default function DashboardLayout({ children }) {
   const router    = useRouter();
   const [user,    setUser]    = useState(null);
@@ -111,6 +111,7 @@ export default function DashboardLayout({ children }) {
         }}>
           {children}
         </main>
+        <AuthSession />
         <DashboardFooter />
       </div>
     </div>
