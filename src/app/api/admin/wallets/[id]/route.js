@@ -10,7 +10,7 @@ export async function PATCH(request, { params }) {
 
   const data   = await request.json();
   const wallet = await prisma.walletAddress.update({
-    where: { id: params.id },
+    where: { id: (await params).id },
     data,
   });
 

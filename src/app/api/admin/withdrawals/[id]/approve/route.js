@@ -8,7 +8,7 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const { id }     = params;
+  const { id }  = await  params;
   const { txHash } = await request.json();
 
   const withdrawal = await prisma.withdrawal.findUnique({ where: { id } });
